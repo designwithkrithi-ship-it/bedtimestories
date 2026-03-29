@@ -1,0 +1,1044 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bedtime Stories for Single Parents</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lora:ital,wght@0,400;0,600;1,400&family=Caveat:wght@500;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #fdf6ee;
+      font-family: 'Lora', serif;
+      background-image:
+        radial-gradient(ellipse at 10% 10%, rgba(255,200,150,0.18) 0%, transparent 55%),
+        radial-gradient(ellipse at 90% 80%, rgba(200,180,255,0.13) 0%, transparent 50%);
+      min-height: 100vh;
+    }
+
+    .page { padding: 48px 32px 80px; }
+
+    /* ── HEADER ── */
+    .header { text-align: center; margin-bottom: 52px; }
+    .header-eyebrow {
+      font-family: 'Caveat', cursive;
+      font-size: 18px; color: #b08060;
+      letter-spacing: 2px; margin-bottom: 10px;
+    }
+    .header-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(32px, 5vw, 56px);
+      color: #2d1e10; line-height: 1.15; font-weight: 700; margin-bottom: 14px;
+    }
+    .header-title em { font-style: italic; color: #b05a30; }
+    .header-subtitle {
+      font-family: 'Lora', serif; font-size: 16px; color: #7a5c42;
+      max-width: 500px; margin: 0 auto; line-height: 1.6;
+    }
+    .divider {
+      width: 80px; height: 2px;
+      background: linear-gradient(to right, transparent, #c0855a, transparent);
+      margin: 24px auto 0;
+    }
+
+    /* ── GRID ── */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 28px; max-width: 1100px; margin: 0 auto;
+    }
+
+    /* ── NOTEBOOK CARD ── */
+    .notebook-card {
+      cursor: pointer; perspective: 900px; height: 230px;
+      transition: transform 0.2s ease;
+      opacity: 0; animation: fadeSlideIn 0.5s ease forwards;
+    }
+    .notebook-card:hover { transform: translateY(-6px) rotate(-1deg); }
+
+    @keyframes fadeSlideIn {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .notebook-inner {
+      width: 100%; height: 100%; position: relative;
+      border-radius: 4px 12px 12px 4px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.18), 0 2px 6px rgba(0,0,0,0.12);
+      display: flex; overflow: hidden;
+    }
+    .notebook-spine {
+      width: 28px; min-width: 28px; height: 100%;
+      display: flex; flex-direction: column;
+      align-items: center; padding: 12px 0; gap: 6px;
+    }
+    .notebook-ring {
+      width: 14px; height: 14px; border-radius: 50%;
+      background: rgba(255,255,255,0.22);
+      border: 2px solid rgba(255,255,255,0.4);
+      flex-shrink: 0;
+    }
+    .notebook-body {
+      flex: 1; display: flex; flex-direction: column;
+      padding: 18px 14px 14px; position: relative; overflow: hidden;
+    }
+    .notebook-body::before {
+      content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 100%;
+      background-image: repeating-linear-gradient(
+        to bottom, transparent, transparent 22px,
+        rgba(0,0,0,0.07) 22px, rgba(0,0,0,0.07) 23px
+      );
+      pointer-events: none;
+    }
+    .notebook-emoji {
+      font-size: 28px; margin-bottom: 10px; display: block;
+      filter: drop-shadow(0 1px 2px rgba(0,0,0,0.15));
+    }
+    .notebook-title {
+      font-family: 'Caveat', cursive; font-size: 15px; font-weight: 700;
+      color: rgba(255,255,255,0.95); line-height: 1.3;
+      text-shadow: 0 1px 3px rgba(0,0,0,0.25); flex: 1;
+    }
+    .notebook-number {
+      font-family: 'Caveat', cursive; font-size: 11px;
+      color: rgba(255,255,255,0.55); align-self: flex-end; margin-top: 8px;
+    }
+
+    /* ── OVERLAY ── */
+    .overlay {
+      position: fixed; inset: 0;
+      background: rgba(12,6,2,0.78);
+      backdrop-filter: blur(8px);
+      z-index: 100;
+      display: none; align-items: center; justify-content: center;
+      padding: 24px 16px;
+    }
+    .overlay.active { display: flex; animation: fadeOverlay 0.3s ease; }
+    .overlay.closing { animation: fadeOverlayOut 0.35s ease forwards; }
+
+    @keyframes fadeOverlay {
+      from { opacity: 0; } to { opacity: 1; }
+    }
+    @keyframes fadeOverlayOut {
+      from { opacity: 1; } to { opacity: 0; }
+    }
+
+    /* ── OPEN NOTEBOOK ── */
+    .open-notebook {
+      width: min(900px, 100%); max-height: 88vh;
+      display: flex; border-radius: 4px 12px 12px 4px;
+      box-shadow:
+        0 60px 100px rgba(0,0,0,0.55),
+        0 20px 40px rgba(0,0,0,0.35),
+        0 4px 10px rgba(0,0,0,0.25);
+      animation: openBook 0.55s cubic-bezier(0.16,1,0.3,1);
+      transform-origin: center center; position: relative;
+    }
+    .open-notebook.closing { animation: closeBook 0.35s ease forwards; }
+
+    @keyframes openBook {
+      from { opacity: 0; transform: perspective(1200px) rotateY(-35deg) scale(0.7); }
+      to   { opacity: 1; transform: perspective(1200px) rotateY(0deg) scale(1); }
+    }
+    @keyframes closeBook {
+      from { opacity: 1; transform: perspective(1200px) rotateY(0deg) scale(1); }
+      to   { opacity: 0; transform: perspective(1200px) rotateY(25deg) scale(0.75); }
+    }
+
+    /* LEFT PAGE */
+    .nb-left {
+      width: 42%; min-width: 42%; max-height: 88vh;
+      display: flex; flex-direction: column;
+      border-radius: 4px 0 0 4px; position: relative; overflow: hidden;
+    }
+    .nb-left::after {
+      content: ''; position: absolute; inset: 0;
+      background-image: repeating-linear-gradient(
+        to bottom, transparent, transparent 29px,
+        rgba(255,255,255,0.1) 29px, rgba(255,255,255,0.1) 30px
+      );
+      pointer-events: none;
+    }
+
+    .nb-rings {
+      position: absolute; right: -14px; top: 0; bottom: 0;
+      width: 28px; display: flex; flex-direction: column;
+      align-items: center; justify-content: space-evenly;
+      z-index: 10; pointer-events: none;
+    }
+    .nb-ring {
+      width: 26px; height: 26px; border-radius: 50%;
+      background: #c8a96e; border: 4px solid #a07840;
+      box-shadow: inset 0 2px 4px rgba(255,255,255,0.3), 0 2px 6px rgba(0,0,0,0.4);
+      flex-shrink: 0;
+    }
+
+    .nb-left-inner {
+      flex: 1; display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 36px 32px 36px 28px; text-align: center;
+      position: relative; z-index: 1;
+    }
+    .nb-left-curl {
+      position: absolute; bottom: 0; right: 0;
+      width: 40px; height: 40px;
+      background: linear-gradient(135deg, transparent 50%, rgba(0,0,0,0.18) 50%);
+      border-radius: 40px 0 0 0;
+    }
+
+    .left-corner    { position: absolute; top: 14px; left: 14px;  font-size: 22px; opacity: 0.35; }
+    .left-corner-br { position: absolute; bottom: 14px; right: 20px; font-size: 22px; opacity: 0.35; }
+
+    .left-story-number {
+      font-family: 'Caveat', cursive; font-size: 13px;
+      letter-spacing: 3px; color: rgba(255,255,255,0.6);
+      text-transform: uppercase; margin-bottom: 20px;
+    }
+    .left-emoji {
+      font-size: 64px; margin-bottom: 20px; display: block;
+      filter: drop-shadow(0 4px 12px rgba(0,0,0,0.3));
+      animation: floatEmoji 3s ease-in-out infinite;
+    }
+    @keyframes floatEmoji {
+      0%,100% { transform: translateY(0); }
+      50%      { transform: translateY(-6px); }
+    }
+    .left-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(16px, 3vw, 22px); font-weight: 700;
+      color: rgba(255,255,255,0.96); line-height: 1.35;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.3); margin-bottom: 24px;
+    }
+    .left-divider {
+      width: 50px; height: 1.5px;
+      background: rgba(255,255,255,0.35); margin: 0 auto 20px;
+    }
+    .left-tagline {
+      font-family: 'Lora', serif; font-style: italic;
+      font-size: 13px; color: rgba(255,255,255,0.6); line-height: 1.6;
+    }
+
+    /* CENTER SPINE */
+    .nb-spine {
+      width: 20px; min-width: 20px;
+      background: linear-gradient(to right, #3a2510, #6b3e1e, #3a2510);
+      box-shadow: -4px 0 12px rgba(0,0,0,0.4), 4px 0 12px rgba(0,0,0,0.3);
+      z-index: 5; flex-shrink: 0;
+    }
+
+    /* RIGHT PAGE */
+    .nb-right {
+      flex: 1; background: #fffef7;
+      border-radius: 0 12px 12px 0; overflow: hidden;
+      display: flex; flex-direction: column; position: relative;
+    }
+    .nb-right::before {
+      content: ''; position: absolute; inset: 0;
+      background-image:
+        linear-gradient(to right, transparent 44px, rgba(220,150,130,0.25) 44px, rgba(220,150,130,0.25) 46px, transparent 46px),
+        repeating-linear-gradient(
+          to bottom, transparent, transparent 31px,
+          rgba(100,140,200,0.13) 31px, rgba(100,140,200,0.13) 32px
+        );
+      pointer-events: none; z-index: 0;
+    }
+
+    .nb-right-content {
+      flex: 1; overflow-y: auto;
+      padding: 36px 36px 36px 54px; position: relative; z-index: 1;
+    }
+    .nb-right-content::-webkit-scrollbar { width: 5px; }
+    .nb-right-content::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.12); border-radius: 3px; }
+
+    .right-page-label {
+      font-family: 'Caveat', cursive; font-size: 12px;
+      color: #b0977a; letter-spacing: 2px; margin-bottom: 18px; display: block;
+    }
+    .story-text {
+      font-family: 'Lora', serif; font-size: 15px;
+      line-height: 2.0; color: #1e120a; white-space: pre-line;
+    }
+    .story-text .drop-cap {
+      font-family: 'Playfair Display', serif;
+      font-size: 3.4em; font-weight: 700;
+      float: left; line-height: 0.72;
+      margin-right: 8px; margin-top: 10px;
+    }
+    .right-page-num {
+      font-family: 'Caveat', cursive; font-size: 13px;
+      color: #c0a080; text-align: center;
+      padding: 14px 0 10px;
+      border-top: 1px solid rgba(180,150,120,0.18);
+      position: relative; z-index: 1;
+      margin: 0 36px 0 54px;
+    }
+
+    /* CLOSE BUTTON */
+    .close-btn {
+      position: fixed; top: 20px; right: 20px; z-index: 200;
+      background: rgba(255,255,255,0.13);
+      border: 1.5px solid rgba(255,255,255,0.32);
+      color: white; width: 42px; height: 42px;
+      border-radius: 50%; cursor: pointer; font-size: 18px;
+      display: flex; align-items: center; justify-content: center;
+      backdrop-filter: blur(4px);
+      transition: background 0.2s, transform 0.15s;
+    }
+    .close-btn:hover { background: rgba(255,255,255,0.25); transform: scale(1.08); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 640px) {
+      .page { padding: 32px 16px 60px; }
+      .grid { grid-template-columns: repeat(auto-fill, minmax(145px, 1fr)); gap: 18px; }
+      .notebook-card { height: 200px; }
+      .open-notebook { flex-direction: column; border-radius: 12px; max-height: 92vh; }
+      .nb-left { width: 100%; min-width: unset; min-height: 180px; border-radius: 12px 12px 0 0; }
+      .nb-rings { display: none; }
+      .nb-spine { width: 100%; min-width: unset; height: 14px; background: linear-gradient(to bottom, #3a2510, #6b3e1e, #3a2510); }
+      .nb-right { border-radius: 0 0 12px 12px; }
+      .nb-right-content { padding: 24px 20px; }
+      .left-emoji { font-size: 44px; }
+      .nb-left-inner { padding: 24px 20px; min-height: 180px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="page">
+  <div class="header">
+    <div class="header-eyebrow">✦ A Collection of Tales ✦</div>
+    <h1 class="header-title">Bedtime Stories for<br /><em>Single Parents</em></h1>
+    <p class="header-subtitle">Twenty gentle tales about love, strength, and the warmth of family — in all its beautiful shapes.</p>
+    <div class="divider"></div>
+  </div>
+  <div class="grid" id="grid"></div>
+</div>
+
+<!-- OVERLAY / OPEN NOTEBOOK -->
+<div class="overlay" id="overlay">
+  <button class="close-btn" id="closeBtn" aria-label="Close">✕</button>
+  <div class="open-notebook" id="openNotebook">
+    <div class="nb-left" id="nbLeft">
+      <span class="left-corner">✦</span>
+      <span class="left-corner-br">✦</span>
+      <div class="nb-left-inner">
+        <div class="left-story-number" id="storyNumber"></div>
+        <span class="left-emoji" id="storyEmoji"></span>
+        <h2 class="left-title" id="storyTitle"></h2>
+        <div class="left-divider"></div>
+        <p class="left-tagline">A bedtime story for families of all shapes</p>
+      </div>
+      <div class="nb-left-curl"></div>
+      <div class="nb-rings" id="rings"></div>
+    </div>
+    <div class="nb-spine"></div>
+    <div class="nb-right">
+      <div class="nb-right-content">
+        <span class="right-page-label">✦ Begin Reading ✦</span>
+        <p class="story-text" id="storyText"></p>
+      </div>
+      <div class="right-page-num" id="pageNum"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const stories = [
+    {
+      id: 1, title: "The Lighthouse Keeper's Daughter",
+      color: "#c0392b", spine: "#922b21", emoji: "🌊",
+      story: `Once upon a time, on a rocky cliff above the sea, lived a girl named Isla and her father. Every night, her father climbed the lighthouse tower to light the great lamp so ships wouldn't get lost in the dark.
+
+"Papa," Isla asked one evening, "aren't you afraid up there all alone?"
+
+Her father smiled and took her hand. "The lamp isn't alone, my love. Every ship it guides sends its gratitude back like a wave. And I have you down here — my own little star."
+
+Isla looked out at the vast ocean. All those boats, safe because her papa cared.
+
+"When I grow up," she said, "I want to be a lighthouse too."
+
+Her father hugged her tightly. "You already are," he whispered. "You light up every room you walk into."
+
+That night, Isla fell asleep listening to the waves, knowing that love — like a lighthouse beam — could reach farther than the eye could see.`
+    },
+    {
+      id: 2, title: "Mama's Magic Hands",
+      color: "#8e44ad", spine: "#6c3483", emoji: "✨",
+      story: `Every evening before bed, Sofia's mama would rub lavender lotion into her small hands and hum a soft song. No words — just melody.
+
+"Mama, what's the song?" Sofia asked.
+
+"It doesn't have a name," her mama said. "I made it up the day you were born."
+
+Sofia looked at her mama's hands — a little rough from working, a little tired from the long days, but always warm.
+
+"Are your hands magic?" Sofia asked.
+
+Her mama laughed gently. "They're just my hands."
+
+"But they make everything better."
+
+Her mama was quiet for a moment, brushing Sofia's hair back. "Maybe love is the magic, mija. And these hands just carry it."
+
+Sofia curled up under her quilt, hands tucked under her cheek, still smelling of lavender.
+
+She dreamed of soft music and warm hands and being the most loved girl in the whole world — which, of course, she was.`
+    },
+    {
+      id: 3, title: "The Star Who Waited",
+      color: "#1a5276", spine: "#154360", emoji: "⭐",
+      story: `High above the sleeping town, there was a small star named Pip who always waited.
+
+Every night, while the other stars gossiped and sparkled and showed off, Pip fixed its light on one particular window below.
+
+Inside that window was a boy named Leo and his mom. She read him stories and tucked him in, and Pip watched over both of them.
+
+"Why do you always stare at that one house?" asked a bigger star.
+
+"Because they need extra light," said Pip.
+
+"There are two of them. That's a whole family," the big star said.
+
+"Exactly," said Pip.
+
+Leo would sometimes look up before closing his eyes. He didn't know about Pip, of course. But he always felt something — a warmth, a sense that the night was safe.
+
+And his mom, who sometimes sat by the window after he was asleep, felt it too.
+
+Two hearts, one window, one faithful little star. That was enough for the whole sky to hold.`
+    },
+    {
+      id: 4, title: "Papa's Lullaby",
+      color: "#196f3d", spine: "#145a32", emoji: "🎵",
+      story: `Marco's papa had a deep, rumbling voice like distant thunder. But every night, it became as soft as summer rain.
+
+He sang the same song — an old one, passed down from his own father, and from his father before that.
+
+The words were in a language Marco only half understood. But the music made sense without words.
+
+"What does it mean, Papa?" Marco asked one night.
+
+His father thought for a long time. "It means: you are mine, and I am yours, and that is everything."
+
+Marco snuggled deeper into his pillow. "Will you sing it forever?"
+
+"Every night until you don't need it anymore," his father said.
+
+"What if I always need it?"
+
+His father smiled in the dark. "Then I'll sing it forever."
+
+Years later, long after Marco was grown, he would hum that tune without even knowing it — while washing dishes, while waiting for the bus, while holding his own child.
+
+Some songs don't end. They just pass on.`
+    },
+    {
+      id: 5, title: "The Little Cloud",
+      color: "#2e86c1", spine: "#1a5276", emoji: "☁️",
+      story: `There was once a small cloud named Nimbus who got separated from the others during a windy afternoon.
+
+She drifted alone for a while, trying not to be afraid of all the open blue sky.
+
+Below, she spotted a little girl sitting on a porch step, waiting.
+
+"What are you waiting for?" called Nimbus.
+
+The girl looked up. "My mom. She works late sometimes."
+
+"Aren't you lonely?"
+
+The girl thought about it. "A little. But she always comes home."
+
+Nimbus sat with the girl — drifting gently overhead, making a shadow so she wasn't in the sun.
+
+When the mom's car finally turned the corner, the girl leaped up and ran. Nimbus watched them hug — tight and long and real.
+
+Then a breeze found her and carried her back to her cloud friends.
+
+"Where were you?" they asked.
+
+"Keeping someone company," she said.
+
+And that night, Nimbus rained softly over that house — a gentle, peaceful rain. A lullaby from the sky.`
+    },
+    {
+      id: 6, title: "Two Hearts, One Home",
+      color: "#e67e22", spine: "#ca6f1e", emoji: "🏡",
+      story: `Theo liked to count the people in his house.
+
+One.
+
+Two.
+
+Him. And his dad.
+
+"Is our family too small?" he asked his dad one night.
+
+His dad sat on the edge of the bed. "What makes a family, do you think?"
+
+Theo counted on his fingers. "People who love each other? People who eat dinner together? People who share the same blanket?"
+
+"Yes," said his dad. "All of that."
+
+"Then we're big enough."
+
+"We are exactly the right size," his dad said.
+
+Theo thought about the house — how it smelled like his dad's cooking every evening, how they had a special knock for the bathroom door, how his dad always checked under the bed even when Theo was too old to be scared.
+
+How his dad's laugh filled every room.
+
+"We don't need more people," Theo decided.
+
+"No," said his dad, "we just need each other."
+
+And that, Theo thought as he closed his eyes, was the most comfortable truth in the world.`
+    },
+    {
+      id: 7, title: "The Brave Little Seed",
+      color: "#27ae60", spine: "#1e8449", emoji: "🌱",
+      story: `A tiny seed fell to the ground one autumn and was very afraid.
+
+The earth was dark and cold. The seed was alone.
+
+"How do I grow?" the seed asked the soil.
+
+"You already know," the soil said. "Just reach."
+
+So the seed pushed a thin root down, and a tender shoot up — slowly, slowly, through the heavy dark.
+
+Winter came. The seed held on.
+
+Spring came. A small green leaf unfurled in the morning light.
+
+A girl named Bea found it one day and crouched down to look. "Mama," she called. "Come see! Something grew all by itself!"
+
+Her mother came and knelt beside her. She looked at the tiny plant for a long moment.
+
+"Not by itself," she said softly. "It had the rain, and the soil, and the sun, and all that time." She glanced at her daughter. "Growing alone just means you found your own way to reach the light."
+
+Bea touched the leaf gently with one finger. "I'm glad it kept trying," she said.
+
+Her mother smiled. "Me too, love. Me too."
+
+That night, Bea dreamed of green things growing in impossible places.`
+    },
+    {
+      id: 8, title: "Moon's Promise",
+      color: "#7f8c8d", spine: "#626567", emoji: "🌙",
+      story: `Every night, the moon made a promise.
+
+She rose when the stars came out, and she looked down at all the children going to sleep — the ones with two parents, the ones with grandparents, and the ones with one parent who was doing everything.
+
+To each sleeping child, she whispered the same thing:
+
+"You are watched over. You are not forgotten. The night is not as dark as it seems."
+
+A boy named James couldn't fall asleep one night. He climbed out of bed and pressed his face to the window.
+
+The moon was full and silver and close.
+
+"I can't sleep," he told her.
+
+"I know," she said — not in words, but in light. "That happens. It's all right."
+
+James watched her for a while. His mom was asleep in the next room, tired from her long day. The whole house was quiet and safe.
+
+He went back to bed and pulled his covers up.
+
+The moon watched over them both — the sleeping mama and the small boy — until his eyes finally closed.
+
+And she kept watching, the way she always did.
+
+The way she always would.`
+    },
+    {
+      id: 9, title: "The Patchwork Blanket",
+      color: "#d35400", spine: "#a04000", emoji: "🧵",
+      story: `Grandma Rosa made a blanket from scraps.
+
+Every piece of fabric came from somewhere — an old dress, a baby's onesie, a shirt that had seen better days. Mismatched squares and triangles, stitched together with steady hands.
+
+She gave it to her daughter Marta when Marta was on her own with little Cora.
+
+"It's not pretty," Marta said, looking at the clashing colors.
+
+"Look closer," said Grandma.
+
+Marta looked. There was her grandmother's apron. There was her own baby blanket. There was her daughter Cora's first birthday dress.
+
+"It's us," Marta whispered.
+
+"All of us," Grandma said. "Every person who loved you, sewn in."
+
+That night, Marta tucked Cora under the patchwork blanket.
+
+"Whose is this?" Cora asked, touching the soft squares.
+
+"Ours," said Marta. "It's everybody who loves us, all wrapped around us."
+
+Cora pressed her cheek to a square of soft yellow. "Then I'm never alone," she said.
+
+"Never," said her mother. "Not for a single night."
+
+And she kissed her daughter's head and turned off the light.`
+    },
+    {
+      id: 10, title: "The Firefly's Gift",
+      color: "#f39c12", spine: "#d68910", emoji: "✨",
+      story: `On the first warm night of summer, a firefly found a girl sitting on her back steps in the dark.
+
+The girl's name was Nadia, and she was sad. Moving to a new place was hard. Making friends was hard. Everything felt hard lately.
+
+The firefly blinked.
+
+Nadia watched.
+
+Then another blinked. And another. Until the whole yard was full of tiny lights.
+
+"How do you do it?" Nadia asked the first firefly quietly. "Being so bright even when it's dark?"
+
+The firefly landed on her finger — weightless, glowing.
+
+She didn't have an answer, of course. But in that moment, Nadia thought she understood.
+
+Brightness doesn't come from the outside. It comes from carrying your own light, even when you don't feel like shining.
+
+Her mom appeared at the door. "There you are. Come in, sweetheart — I made hot chocolate."
+
+Nadia watched the fireflies one more moment. Then she went inside to her mother, to the warm mug, to the small bright home they were making in this new place.
+
+That night, she slept more peacefully than she had in weeks.`
+    },
+    {
+      id: 11, title: "The River's Journey",
+      color: "#1abc9c", spine: "#148f77", emoji: "🌊",
+      story: `A young river started in the mountains, alone and unsure.
+
+She bumped into rocks. She wound around hills she didn't expect. Sometimes she flowed fast; sometimes she slowed to almost nothing.
+
+"Am I going the right way?" she asked an old willow tree.
+
+"There's no wrong way for a river," the willow said. "You always find the sea."
+
+The river wasn't sure she believed that. But she kept going.
+
+Along the way, she gathered things — a fallen leaf that floated with her for miles, a family of ducks, the reflection of a hundred sunsets.
+
+She carved valleys into mountains. She gave water to the roots of forests.
+
+"I thought I was just trying to get somewhere," she said one evening to the setting sun. "But I've been doing so much along the way."
+
+"That's how it always is," said the sun.
+
+And far away, in a house above a river bend, a mother told her son this story.
+
+"Which part is us?" he asked.
+
+She pointed at the river outside their window — steady, winding, beautiful.
+
+"All of it," she said.`
+    },
+    {
+      id: 12, title: "Wings of the Hummingbird",
+      color: "#e74c3c", spine: "#cb4335", emoji: "🐦",
+      story: `Ruby the hummingbird was the smallest bird in the garden, and some days that felt unfair.
+
+The eagles had such impressive wings. The owls had such wisdom. Even the sparrows had the comfort of their flocks.
+
+But Ruby could hover. She could stay perfectly still in the air while everything else moved. She could reach the sweetest nectar deep inside flowers that other birds couldn't touch.
+
+One morning, a little boy named Max sat on the porch watching her.
+
+"You're so small," he said, not unkindly.
+
+Ruby hovered right in front of his nose.
+
+"How do you do it?" he asked. "How do you fly so fast with such tiny wings?"
+
+She didn't answer, of course. But his mother, sitting nearby, did.
+
+"She beats her wings eighty times per second," she said. "She doesn't fly fast by being big. She flies fast by working hard and never stopping."
+
+Max thought about that for a long time.
+
+That night, he asked his mom: "Is that why you do everything for us?"
+
+She looked at him. "I don't do everything," she said. "You help."
+
+He smiled. "We're both hummingbirds."
+
+She laughed — a real, bright, surprised laugh. "Yes," she said. "We are."
+
+And that night they both slept soundly, wings finally still.`
+    },
+    {
+      id: 13, title: "The Garden After Rain",
+      color: "#2980b9", spine: "#1a5276", emoji: "🌧️",
+      story: `After the long storm, the garden was muddy and bent.
+
+The flowers had drooped. The small herb pots had tipped. The path was covered in fallen leaves.
+
+Lily stood at the window looking at the mess, and her heart felt the same.
+
+But her dad put a hand on her shoulder.
+
+"Come on," he said. "Let's go check it."
+
+They went out in their boots. And when they looked closely — really looked — they found:
+
+The roses were still standing.
+
+The mint smelled twice as fresh.
+
+A tiny mushroom had appeared overnight where there hadn't been one before.
+
+And a puddle reflected the whole sky perfectly.
+
+"It doesn't look so bad now," Lily said, surprised.
+
+"Storms don't ruin things," her dad said, crouching beside a tulip. "They just change them."
+
+He stood up and found a small earthworm on his boot.
+
+"The worms love it," he added.
+
+Lily laughed. Really laughed, for the first time in days.
+
+That night, she drew the garden — muddy and messy and beautiful — and put it on the fridge.
+
+Her dad saw it in the morning and stood for a long time, smiling.`
+    },
+    {
+      id: 14, title: "One Candle's Glow",
+      color: "#f1c40f", spine: "#d4ac0d", emoji: "🕯️",
+      story: `During the big storm, the power went out.
+
+It was dark and a little scary. The house felt different — bigger, quieter, full of unfamiliar shadows.
+
+But Maya's mom found the old candle in the kitchen drawer. She lit it and placed it on the table.
+
+And everything changed.
+
+The shadows became soft instead of sharp. The room became small and warm instead of big and cold. The flame danced a little whenever they breathed.
+
+Maya leaned her chin on her hands and stared at it.
+
+"It's so small," she said. "How can it make so much light?"
+
+Her mom sat across from her, face golden in the glow. "That's what candles do. One small flame is enough to change a whole room."
+
+They ate dinner by candlelight. They played cards. They told each other three things about their day.
+
+When the power came back on, the lights felt too bright.
+
+"Can we blow it out?" Maya asked.
+
+So they did. And sat a while longer in the quiet, cozy dark.
+
+"Mama," Maya said. "You're like a candle."
+
+Her mother smiled. "So are you."
+
+Neither of them moved for a long time.`
+    },
+    {
+      id: 15, title: "The Penguin Who Paddled Alone",
+      color: "#2c3e50", spine: "#1a252f", emoji: "🐧",
+      story: `Percy the penguin had one egg, and he was determined.
+
+He balanced it on his feet through the ice storms and the dark polar nights. Other penguins had partners. Percy had his egg and his stubborn heart.
+
+On the coldest night, he sang to it.
+
+He wasn't sure if eggs could hear. But singing helped him, so he sang.
+
+Weeks passed. And then one morning, a small crack appeared in the shell.
+
+Then a beak. Then a tiny, damp, squinting penguin looked up at him.
+
+"Hello," said Percy. He didn't know what else to say.
+
+The baby penguin made a small sound — somewhere between a squeak and a honk.
+
+Percy laughed. It echoed across the ice.
+
+"I'd do it all again," he said softly, looking at the small creature on his feet. "Every cold night. Every storm."
+
+His chick blinked its big dark eyes.
+
+And around them, other penguins huddled closer — because that's what penguin families do. Not just the ones with two parents. All of them, together, making warmth in the cold.
+
+Percy felt it surround him like a hug.
+
+He had never felt less alone.`
+    },
+    {
+      id: 16, title: "The Old Oak Tree",
+      color: "#795548", spine: "#5d4037", emoji: "🌳",
+      story: `The old oak tree at the edge of the yard had been there longer than anyone could remember.
+
+It had survived droughts and ice storms and lightning — there was even a scar on one side where lightning had struck.
+
+Sam liked to lean against it after school.
+
+"You're very strong," Sam told the tree one afternoon.
+
+The tree didn't answer. Trees don't.
+
+But Sam's grandpa, sitting nearby, did.
+
+"You know how an oak gets strong?" he asked.
+
+Sam shook his head.
+
+"Wind," said Grandpa. "When the wind pushes the tree, the roots grow deeper. The harder the wind blows, the deeper the roots go. Storms don't weaken oaks. They root them."
+
+Sam looked at the scar from the lightning.
+
+"Does it hurt?"
+
+"Trees don't feel pain like we do," Grandpa said. "But that scar is part of the tree's story. It healed around it and kept growing."
+
+That night, Sam told the story to his mom.
+
+She was quiet for a moment, then pulled him close.
+
+"We're oaks," she said.
+
+"With deep roots?" Sam asked.
+
+"Very, very deep roots," she said.
+
+Sam fell asleep dreaming of roots going all the way down to the center of the earth.`
+    },
+    {
+      id: 17, title: "Silver Thread",
+      color: "#9b59b6", spine: "#7d3c98", emoji: "🌟",
+      story: `When Zoe's mom worked the night shift, Zoe had a hard time sleeping.
+
+So her mom invented the Silver Thread.
+
+"Imagine," she said, tucking Zoe in before she left, "that there's a silver thread going from your heart to mine. No matter how far apart we are — at work, in a different room, across the city — the thread stays connected."
+
+Zoe pressed her hand to her chest. "I can almost feel it."
+
+"That's because it's real," her mom said. "Give it a little tug when you miss me."
+
+After her mom left, Zoe lay in the dark and thought about the thread.
+
+Wherever her mom was right now — walking through the hospital halls, checking on patients, drinking bad coffee in the break room — the thread connected them.
+
+She tugged it gently.
+
+And miles away, Zoe's mom felt something in her chest — a warmth, a certainty — and smiled.
+
+She pulled out her phone and sent one text: 💙
+
+Zoe's aunt, who was watching her, showed her the phone.
+
+Zoe smiled and pulled the blanket up to her chin.
+
+The thread held, steady and silver, all night long.`
+    },
+    {
+      id: 18, title: "The Midnight Kitchen",
+      color: "#c0392b", spine: "#922b21", emoji: "🍵",
+      story: `Long after the rest of the world was asleep, Noor heard sounds from the kitchen.
+
+She crept out of bed and found her father at the stove in his old robe, making tea.
+
+"Can't sleep?" she asked.
+
+He turned, surprised but not unhappy. "Neither can you, it seems."
+
+She climbed onto a kitchen stool. He made her warm milk with honey without being asked.
+
+The kitchen was quiet and yellow and small. Outside, the world was dark and enormous. But in here, everything was the right size.
+
+"What do you think about?" Noor asked. "When you can't sleep?"
+
+Her father wrapped both hands around his mug. "You. Work. Groceries. Whether we need more batteries." He smiled. "Everything and nothing."
+
+"That's what I think about too," said Noor.
+
+They sat together without talking for a while. The refrigerator hummed. A distant car passed.
+
+"This is nice," Noor said.
+
+"It is," her father agreed.
+
+She didn't know it then, but Noor would remember that kitchen for the rest of her life — the yellow light, the warm milk, her father's quiet company.
+
+Some of the best moments don't announce themselves. They just happen, gently, in the middle of the night.`
+    },
+    {
+      id: 19, title: "Dancing Shadows",
+      color: "#16a085", spine: "#117a65", emoji: "🌟",
+      story: `At bedtime, Eli's mom would hold a flashlight and make shadows on the wall.
+
+A rabbit. A wolf. A flying bird. A dragon.
+
+"Now you," she'd say, handing him the light.
+
+He'd make his hands into shapes — a crocodile, a butterfly, something that was supposed to be a horse but looked more like a cloud.
+
+"That's magnificent," his mom would say, completely seriously.
+
+One night Eli said, "Why do we do this every night?"
+
+His mom thought about it. "Because it's ours. Our thing. Every family has their things."
+
+Eli made a star shape with all his fingers splayed.
+
+"The whole story of the day," his mom said, "is written in shadows. Everything that happened — good and bad — becomes a shadow by bedtime."
+
+"And then what?" Eli asked.
+
+"Then the light comes back in the morning," she said. "And we make new ones."
+
+Eli thought about that. He made one more shadow — two people standing close together.
+
+"Who's that?" his mom whispered.
+
+"Us," said Eli.
+
+She leaned over and kissed the top of his head.
+
+He turned off the flashlight. They sat in the warm dark, the best kind of silence between them.
+
+And morning would come, as it always did.`
+    },
+    {
+      id: 20, title: "The Sunrise Promise",
+      color: "#e91e63", spine: "#c2185b", emoji: "🌅",
+      story: `Every morning before school, Anna and her mom stood at the kitchen window for exactly one minute.
+
+They watched the light change.
+
+First dark blue. Then gray-pink. Then orange spreading out like a spill. Then — gold.
+
+Some mornings they didn't talk. Some mornings they talked about everything.
+
+"Why do we do this?" Anna asked one cold January morning.
+
+Her mom held her mug and watched the sky. "Because no matter how hard yesterday was, the sun comes up and gives us another one."
+
+Anna thought about yesterday. It had been a hard one. Her mom had cried at the kitchen table after she thought Anna was asleep.
+
+"Even when yesterday was really bad?" Anna said.
+
+Her mom looked at her gently. "Especially then."
+
+The sun poured gold through the window. It fell on the table, on the mug, on her mom's tired, beautiful face.
+
+"It's like a promise," Anna said.
+
+"That's exactly what it is," her mom said. "Every single morning, without fail."
+
+Anna leaned against her mom's side, both of them warm in the sunrise.
+
+The world outside was cold. The world inside was gold.
+
+Tonight, when she went to bed, Anna would know: the sun was already on its way back.
+
+It always came back.
+
+That was the promise.`
+    }
+  ];
+
+  const colorSchemes = [
+    { cover: "#c0392b", spine: "#922b21" },
+    { cover: "#8e44ad", spine: "#6c3483" },
+    { cover: "#1a5276", spine: "#154360" },
+    { cover: "#196f3d", spine: "#145a32" },
+    { cover: "#2e86c1", spine: "#1a5276" },
+    { cover: "#e67e22", spine: "#ca6f1e" },
+    { cover: "#27ae60", spine: "#1e8449" },
+    { cover: "#7f8c8d", spine: "#626567" },
+    { cover: "#d35400", spine: "#a04000" },
+    { cover: "#f39c12", spine: "#d68910" },
+  ];
+
+  const grid      = document.getElementById('grid');
+  const overlay   = document.getElementById('overlay');
+  const closeBtn  = document.getElementById('closeBtn');
+  const openNb    = document.getElementById('openNotebook');
+  const nbLeft    = document.getElementById('nbLeft');
+  const rings     = document.getElementById('rings');
+  const storyNum  = document.getElementById('storyNumber');
+  const storyEmoji= document.getElementById('storyEmoji');
+  const storyTitle= document.getElementById('storyTitle');
+  const storyText = document.getElementById('storyText');
+  const pageNum   = document.getElementById('pageNum');
+
+  // Build rings HTML
+  const ringsHtml = Array.from({length:7}, () => '<div class="nb-ring"></div>').join('');
+  rings.innerHTML = ringsHtml;
+
+  // Build grid
+  stories.forEach((story, i) => {
+    const scheme = colorSchemes[(story.id - 1) % colorSchemes.length];
+    const card = document.createElement('div');
+    card.className = 'notebook-card';
+    card.style.animationDelay = `${i * 40}ms`;
+    card.title = story.title;
+    card.innerHTML = `
+      <div class="notebook-inner">
+        <div class="notebook-spine" style="background:${scheme.spine}">
+          <div class="notebook-ring"></div>
+          <div class="notebook-ring"></div>
+          <div class="notebook-ring"></div>
+          <div class="notebook-ring"></div>
+        </div>
+        <div class="notebook-body" style="background:${scheme.cover}">
+          <span class="notebook-emoji">${story.emoji}</span>
+          <div class="notebook-title">${story.title}</div>
+          <div class="notebook-number">#${String(story.id).padStart(2,'0')}</div>
+        </div>
+      </div>`;
+    card.addEventListener('click', () => openStory(story));
+    grid.appendChild(card);
+  });
+
+  function openStory(story) {
+    const scheme = colorSchemes[(story.id - 1) % colorSchemes.length];
+
+    nbLeft.style.background = `linear-gradient(155deg, ${scheme.cover} 0%, ${scheme.spine} 100%)`;
+    storyNum.textContent  = `Story · ${String(story.id).padStart(2,'0')} · of · 20`;
+    storyEmoji.textContent = story.emoji;
+    storyTitle.textContent = story.title;
+    pageNum.textContent    = `— ${story.id} —`;
+
+    // Drop cap: wrap first letter in a span
+    const text = story.story;
+    const first = text.charAt(0);
+    const rest  = text.slice(1);
+    storyText.innerHTML = `<span class="drop-cap" style="color:${scheme.cover}">${first}</span>${rest}`;
+
+    openNb.classList.remove('closing');
+    overlay.classList.remove('closing');
+    overlay.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeStory() {
+    openNb.classList.add('closing');
+    overlay.classList.add('closing');
+    setTimeout(() => {
+      overlay.classList.remove('active', 'closing');
+      openNb.classList.remove('closing');
+      document.body.style.overflow = '';
+    }, 380);
+  }
+
+  closeBtn.addEventListener('click', closeStory);
+  overlay.addEventListener('click', e => { if (e.target === overlay) closeStory(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeStory(); });
+</script>
+</body>
+</html>
